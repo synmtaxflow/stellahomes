@@ -1290,7 +1290,7 @@
                     $('#viewRoomItems').text(response.items.length);
                     $('#viewRoomCreated').text(new Date(response.created_at).toLocaleDateString());
                     if (response.image) {
-                        $('#viewRoomImage').attr('src', `/storage/${response.image}`).show();
+                        $('#viewRoomImage').attr('src', `storage/${response.image}`).show();
                     } else {
                         $('#viewRoomImage').hide();
                     }

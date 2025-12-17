@@ -345,7 +345,7 @@
                     $('#viewBlockRooms').text(response.rooms_count || 0);
                     $('#viewBlockCreated').text(new Date(response.created_at).toLocaleDateString());
                     if (response.image) {
-                        $('#viewBlockImage').attr('src', `/storage/${response.image}`).show();
+                        $('#viewBlockImage').attr('src', `storage/${response.image}`).show();
                     } else {
                         $('#viewBlockImage').hide();
                     }

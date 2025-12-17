@@ -45,7 +45,7 @@
                         <label class="form-label fw-bold">Hero Image</label>
                         <div class="mb-3">
                             @php
-                                $heroImage = $settings['hero_image'] ?? '/landing pages/img/hero.jpg';
+                                $heroImage = $settings['hero_image'] ?? url('landing pages/img/hero.jpg');
                                 $isUploaded = isset($settings['hero_image_raw']) && $settings['hero_image_raw'];
                             @endphp
                             <div class="position-relative mb-3">
@@ -74,7 +74,7 @@
                         <label class="form-label fw-bold">About Section Image</label>
                         <div class="mb-3">
                             @php
-                                $aboutImage = $settings['about_image'] ?? '/landing pages/img/about.jpg';
+                                $aboutImage = $settings['about_image'] ?? url('landing pages/img/about.jpg');
                                 $isAboutUploaded = isset($settings['about_image_raw']) && $settings['about_image_raw'];
                             @endphp
                             <div class="position-relative mb-3">

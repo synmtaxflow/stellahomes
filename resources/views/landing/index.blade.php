@@ -10,7 +10,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon -->
-    <link href="/landing pages/img/favicon.ico" rel="icon">
+    <link href="{{ url('landing pages/img/favicon.ico') }}" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -21,14 +21,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="/landing pages/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="/landing pages/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="{{ url('landing pages/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ url('landing pages/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="/landing pages/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url('landing pages/css/bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="/landing pages/css/style.css" rel="stylesheet">
+    <link href="{{ url('landing pages/css/style.css') }}" rel="stylesheet">
 
     <!-- Dynamic Colors from Settings -->
     <style>
@@ -226,7 +226,7 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <a href="{{ route('landing') }}" class="nav-item nav-link active">Home</a>
-                        <a href="#about" class="nav-item nav-link">about</a>
+                        <a href="#about" class="nav-item nav-link">about stelahomes</a>
                         <a href="#rooms" class="nav-item nav-link">Rooms</a>
                         <a href="#facilities" class="nav-item nav-link">Facilities</a>
                         <a href="#booking" class="nav-item nav-link">Book Now</a>
@@ -243,7 +243,7 @@
     @php
         $primaryColor = $settings['primary_color'] ?? '#1e3c72';
         $secondaryColor = $settings['secondary_color'] ?? '#2a5298';
-        $heroImage = $settings['hero_image'] ?? '/landing pages/img/hero.jpg';
+        $heroImage = $settings['hero_image'] ?? url('landing pages/img/hero.jpg');
         // Convert hex to rgb for rgba
         $primaryRgb = sscanf($primaryColor, "#%02x%02x%02x");
         $secondaryRgb = sscanf($secondaryColor, "#%02x%02x%02x");
@@ -274,7 +274,7 @@
             <div class="row gx-5">
                 <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
                     <div class="position-relative h-100">
-                        <img class="position-absolute w-100 h-100 rounded" src="{{ $settings['about_image'] ?? '/landing pages/img/about.jpg' }}"
+                        <img class="position-absolute w-100 h-100 rounded" src="{{ $settings['about_image'] ?? url('landing pages/img/about.jpg') }}"
                             style="object-fit: cover;">
                     </div>
                 </div>
@@ -448,7 +448,7 @@
                                 <div class="position-relative" style="height: 250px; background-color: #f8f9fa; overflow: hidden;">
                                     @if($room->image)
                                         <img class="img-fluid w-100 h-100"
-                                             src="/storage/{{ $room->image }}"
+                                             src="{{ url('storage/' . $room->image) }}"
                                              alt="{{ $room->name }}"
                                              style="object-fit: cover;"
                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -923,15 +923,15 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/landing pages/lib/easing/easing.min.js"></script>
-    <script src="/landing pages/lib/waypoints/waypoints.min.js"></script>
-    <script src="/landing pages/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/landing pages/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="/landing pages/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="/landing pages/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="{{ url('landing pages/lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url('landing pages/lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url('landing pages/lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url('landing pages/lib/tempusdominus/js/moment.min.js') }}"></script>
+    <script src="{{ url('landing pages/lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
+    <script src="{{ url('landing pages/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
     <!-- Template Javascript -->
-    <script src="/landing pages/js/main.js"></script>
+    <script src="{{ url('landing pages/js/main.js') }}"></script>
 
     <!-- Chatbot and WhatsApp Script -->
     <script>

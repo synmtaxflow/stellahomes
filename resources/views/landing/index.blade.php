@@ -29,7 +29,7 @@
 
     <!-- Template Stylesheet -->
     <link href="{{ asset('landing pages/css/style.css') }}" rel="stylesheet">
-    
+
     <!-- Dynamic Colors from Settings -->
     <style>
         :root {
@@ -38,40 +38,40 @@
             --light: {{ $settings['light_color'] ?? '#EFF5F9' }};
             --dark: {{ $settings['dark_color'] ?? '#1D2A4D' }};
         }
-        
+
         .btn-primary {
             background: linear-gradient(135deg, {{ $settings['primary_color'] ?? '#1e3c72' }} 0%, {{ $settings['secondary_color'] ?? '#2a5298' }} 100%);
             border: none;
         }
-        
+
         .btn-primary:hover {
             background: linear-gradient(135deg, {{ $settings['secondary_color'] ?? '#2a5298' }} 0%, {{ $settings['primary_color'] ?? '#1e3c72' }} 100%);
         }
-        
+
         .text-primary {
             color: {{ $settings['primary_color'] ?? '#1e3c72' }} !important;
         }
-        
+
         .border-bottom.border-5 {
             border-color: {{ $settings['primary_color'] ?? '#1e3c72' }} !important;
         }
-        
+
         .hero-header {
             /* Background image will be set inline */
         }
-        
+
         @media (min-width: 992px) {
             .navbar-light .navbar-nav .nav-link:hover::before,
             .navbar-light .navbar-nav .nav-link.active::before {
                 background: {{ $settings['primary_color'] ?? '#1e3c72' }};
             }
         }
-        
+
         .navbar-light .navbar-nav .nav-link:hover,
         .navbar-light .navbar-nav .nav-link.active {
             color: {{ $settings['primary_color'] ?? '#1e3c72' }} !important;
         }
-        
+
         .service-item .service-icon {
             background: linear-gradient(135deg, {{ $settings['primary_color'] ?? '#1e3c72' }} 0%, {{ $settings['secondary_color'] ?? '#2a5298' }} 100%);
         }
@@ -226,7 +226,7 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <a href="{{ route('landing') }}" class="nav-item nav-link active">Home</a>
-                        <a href="#about" class="nav-item nav-link">About</a>
+                        <a href="#about" class="nav-item nav-link">more about</a>
                         <a href="#rooms" class="nav-item nav-link">Rooms</a>
                         <a href="#facilities" class="nav-item nav-link">Facilities</a>
                         <a href="#booking" class="nav-item nav-link">Book Now</a>
@@ -283,8 +283,8 @@
                         <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">About Us</h5>
                         <h1 class="display-4">Best Student Accommodation For Your Studies</h1>
                     </div>
-                    <p>{{ $settings['hostel_name'] ?? 'ISACK HOSTEL' }} provides comfortable and affordable accommodation for students. We offer modern facilities, 
-                        secure environment, and a supportive community to help you focus on your studies. Our hostel is designed 
+                    <p>{{ $settings['hostel_name'] ?? 'ISACK HOSTEL' }} provides comfortable and affordable accommodation for students. We offer modern facilities,
+                        secure environment, and a supportive community to help you focus on your studies. Our hostel is designed
                         to make your university experience memorable and productive.</p>
                     <div class="row g-3 pt-3">
                         <div class="col-sm-3 col-6">
@@ -427,7 +427,7 @@
                                 ->where('status', 'active')
                                 ->whereNull('check_out_date')
                                 ->exists();
-                            
+
                             // Only show rooms with available beds or empty rooms without beds
                             $isAvailable = false;
                             if ($room->has_beds && $freeBeds > 0) {
@@ -435,11 +435,11 @@
                             } elseif (!$room->has_beds && !$hasStudent) {
                                 $isAvailable = true;
                             }
-                            
+
                             if (!$isAvailable) {
                                 continue;
                             }
-                            
+
                             $rentPrice = $room->rent_price ?? ($room->beds->first()->rent_price ?? 0);
                             $displayedRooms++;
                         @endphp
@@ -447,9 +447,9 @@
                             <div class="bg-light rounded overflow-hidden">
                                 <div class="position-relative" style="height: 250px; background-color: #f8f9fa; overflow: hidden;">
                                     @if($room->image)
-                                        <img class="img-fluid w-100 h-100" 
-                                             src="{{ asset('storage/' . $room->image) }}" 
-                                             alt="{{ $room->name }}" 
+                                        <img class="img-fluid w-100 h-100"
+                                             src="{{ asset('storage/' . $room->image) }}"
+                                             alt="{{ $room->name }}"
                                              style="object-fit: cover;"
                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                         <div class="d-flex align-items-center justify-content-center h-100" style="display: none;">
@@ -533,7 +533,7 @@
                                 @if($booking['is_expired'])
                                     <span class="badge bg-danger fs-6">Expired</span>
                                 @else
-                                    <div class="countdown-timer" 
+                                    <div class="countdown-timer"
                                          data-expires-at="{{ $booking['expires_at']->toIso8601String() }}"
                                          data-booking-id="{{ $booking['student']->id }}">
                                         <span class="badge bg-{{ $booking['hours_remaining'] < 2 ? 'warning' : 'info' }} fs-6">
@@ -642,7 +642,7 @@
                         <input type="hidden" name="block_id" id="form_block_id">
                         <input type="hidden" name="room_id" id="form_room_id">
                         <input type="hidden" name="bed_id" id="form_bed_id">
-                        
+
                         <div class="row g-3">
                             <div class="col-12">
                                 <label class="form-label fw-bold">Full Name *</label>
@@ -661,7 +661,7 @@
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
-                        
+
                         <!-- Terms and Conditions Section -->
                         <div class="col-12 mt-4">
                             <div class="card border-info">
@@ -682,9 +682,9 @@
                                 <div class="invalid-feedback">You must accept the terms and conditions to proceed.</div>
                             </div>
                         </div>
-                        
+
                         <div id="bookingAlert" class="alert d-none mt-3"></div>
-                        
+
                         <div class="mt-4">
                             <button type="submit" id="submitBookingBtn" class="btn btn-primary w-100 py-3">
                                 <i class="bi bi-check-circle me-2"></i><span id="submitBookingText">Complete Booking</span>
@@ -861,9 +861,9 @@
         $cleanNumber = str_replace('+', '', $cleanNumber);
         $whatsappLink = 'https://wa.me/' . $cleanNumber;
     @endphp
-    <a href="{{ $whatsappLink }}" 
-       target="_blank" 
-       class="btn btn-success btn-lg-square rounded-circle position-fixed" 
+    <a href="{{ $whatsappLink }}"
+       target="_blank"
+       class="btn btn-success btn-lg-square rounded-circle position-fixed"
        style="bottom: 100px; right: 30px; width: 60px; height: 60px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;"
        title="Chat with us on WhatsApp">
         <i class="fab fa-whatsapp fs-2"></i>
@@ -897,12 +897,12 @@
             <!-- Chatbot Input -->
             <div class="card-footer bg-white p-2">
                 <div class="input-group">
-                    <input type="text" 
-                           class="form-control border-0" 
-                           id="chatbotInput" 
+                    <input type="text"
+                           class="form-control border-0"
+                           id="chatbotInput"
                            placeholder="Type your question..."
                            style="border-radius: 20px;">
-                    <button class="btn btn-primary rounded-circle ms-2" 
+                    <button class="btn btn-primary rounded-circle ms-2"
                             id="sendChatbotMessage"
                             style="width: 40px; height: 40px; background: linear-gradient(135deg, {{ $settings['primary_color'] ?? '#1e3c72' }} 0%, {{ $settings['secondary_color'] ?? '#2a5298' }} 100%); border: none;">
                         <i class="bi bi-send"></i>
@@ -913,8 +913,8 @@
     </div>
 
     <!-- Chatbot Toggle Button -->
-    <button id="chatbotToggle" 
-            class="btn btn-primary btn-lg-square rounded-circle position-fixed" 
+    <button id="chatbotToggle"
+            class="btn btn-primary btn-lg-square rounded-circle position-fixed"
             style="bottom: 170px; right: 30px; width: 60px; height: 60px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, {{ $settings['primary_color'] ?? '#1e3c72' }} 0%, {{ $settings['secondary_color'] ?? '#2a5298' }} 100%) !important; border: none;"
             title="Chat with us">
         <i class="bi bi-chat-dots fs-2 text-white"></i>
@@ -964,7 +964,7 @@
         // Chatbot functions
         function getChatbotResponse(userMessage) {
             const message = userMessage.toLowerCase().trim();
-            
+
             // Check for keywords
             for (const [keyword, responses] of Object.entries(chatbotKnowledge)) {
                 if (message.includes(keyword)) {
@@ -972,7 +972,7 @@
                     return randomResponse;
                 }
             }
-            
+
             // Default response
             const defaultResponses = chatbotKnowledge.default;
             return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
@@ -982,7 +982,7 @@
             const messagesDiv = document.getElementById('chatbotMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'mb-3';
-            
+
             if (isUser) {
                 messageDiv.innerHTML = `
                     <div class="d-flex align-items-start justify-content-end">
@@ -1000,7 +1000,7 @@
                     </div>
                 `;
             }
-            
+
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
@@ -1009,7 +1009,7 @@
         document.getElementById('chatbotToggle').addEventListener('click', function() {
             const widget = document.getElementById('chatbotWidget');
             const toggle = document.getElementById('chatbotToggle');
-            
+
             if (widget.style.display === 'none' || widget.style.display === '') {
                 widget.style.display = 'block';
                 toggle.style.display = 'none';
@@ -1039,13 +1039,13 @@
         function sendChatbotMessage() {
             const input = document.getElementById('chatbotInput');
             const message = input.value.trim();
-            
+
             if (message === '') return;
-            
+
             // Add user message
             addMessageToChat(message, true);
             input.value = '';
-            
+
             // Simulate typing delay
             setTimeout(function() {
                 const response = getChatbotResponse(message);
@@ -1067,7 +1067,7 @@
                 const blockName = $(this).find('option:selected').text();
                 const roomsMapContainer = $('#roomsMapContainer');
                 const roomsMap = $('#roomsMap');
-                
+
                 if (!blockId) {
                     roomsMapContainer.hide();
                     return;
@@ -1096,7 +1096,7 @@
                                     let statusText = 'Available';
                                     let clickable = true;
                                     let bedInfoText = '';
-                                    
+
                                     if (room.has_beds) {
                                         if (room.free_beds === 0) {
                                             status = 'occupied';
@@ -1110,7 +1110,7 @@
                                             statusClass = 'success';
                                             statusText = 'Available';
                                             clickable = true;
-                                            
+
                                             // Display bed count: "1 bed available" or "2 beds available"
                                             if (room.free_beds === 1) {
                                                 bedInfoText = '1 bed available';
@@ -1137,8 +1137,8 @@
 
                                     const roomCard = `
                                         <div class="col-md-3 col-sm-4 col-6">
-                                            <div class="card room-card h-100 ${clickable ? 'cursor-pointer' : 'opacity-50'}" 
-                                                 data-room-id="${room.id}" 
+                                            <div class="card room-card h-100 ${clickable ? 'cursor-pointer' : 'opacity-50'}"
+                                                 data-room-id="${room.id}"
                                                  data-room-name="${room.name}"
                                                  data-has-beds="${room.has_beds ? '1' : '0'}"
                                                  data-status="${status}"
@@ -1233,7 +1233,7 @@
                 } else {
                     $('#form_bed_id').val('');
                 }
-                
+
                 const bookingModal = new bootstrap.Modal(document.getElementById('bookingDetailsModal'));
                 bookingModal.show();
             }
@@ -1263,7 +1263,7 @@
                                 .map(item => item.trim())
                                 .filter(item => item && item.startsWith('-'))
                                 .map(item => item.replace(/^-\s*/, ''));
-                            
+
                             if (items.length > 0) {
                                 let listHtml = '<ul class="mb-0" style="padding-left: 1.5rem;">';
                                 items.forEach(function(item) {
@@ -1299,22 +1299,22 @@
             // Handle booking form submission via AJAX
             $('#bookingForm').on('submit', function(e) {
                 e.preventDefault();
-                
+
                 const $form = $(this);
                 const $submitBtn = $('#submitBookingBtn');
                 const $submitText = $('#submitBookingText');
                 const $submitSpinner = $('#submitBookingSpinner');
                 const $alert = $('#bookingAlert');
-                
+
                 // Reset alert and validation errors
                 $alert.removeClass('alert-success alert-danger').addClass('d-none').html('');
                 $form.find('.is-invalid').removeClass('is-invalid');
                 $form.find('.invalid-feedback').text('');
-                
+
                 // Validate required hidden fields
                 const blockId = $('#form_block_id').val();
                 const roomId = $('#form_room_id').val();
-                
+
                 if (!blockId || !roomId) {
                     $alert.removeClass('d-none').addClass('alert-danger').html(
                         '<i class="bi bi-exclamation-circle me-2"></i>Please select a block and room before booking.'
@@ -1330,16 +1330,16 @@
                     );
                     return;
                 }
-                
+
                 // Disable submit button and show loading
                 $submitBtn.prop('disabled', true);
                 $submitText.text('Processing...');
                 $submitSpinner.removeClass('d-none');
-                
+
                 // Get form data and normalize bed_id
                 let formData = $form.serializeArray();
                 let bedId = $('#form_bed_id').val();
-                
+
                 // Remove bed_id if it's empty, otherwise keep it
                 formData = formData.filter(function(item) {
                     if (item.name === 'bed_id' && (!bedId || bedId === '')) {
@@ -1347,13 +1347,13 @@
                     }
                     return true;
                 });
-                
+
                 // Convert to object for easier manipulation
                 let formDataObj = {};
                 formData.forEach(function(item) {
                     formDataObj[item.name] = item.value;
                 });
-                
+
                 // Debug: Log form data
                 console.log('Form data being sent:', formDataObj);
                 console.log('Block ID:', blockId);
@@ -1362,7 +1362,7 @@
                 console.log('Full Name:', $('#bookingFullName').val());
                 console.log('Phone:', $('#bookingPhone').val());
                 console.log('Check-in Date:', $('#bookingCheckInDate').val());
-                
+
                 $.ajax({
                     url: $form.attr('action'),
                     type: 'POST',
@@ -1377,7 +1377,7 @@
                             $alert.removeClass('d-none alert-danger').addClass('alert-success').html(
                                 '<i class="bi bi-check-circle me-2"></i>' + response.message
                             );
-                            
+
                             // Show success modal with booking details
                             const bookingInfo = response.booking_info;
                             let successContent = `
@@ -1392,33 +1392,33 @@
                                     <p class="mb-0"><strong>Password:</strong> ${bookingInfo.password}</p>
                                 </div>
                                 <p class="text-center text-muted small">
-                                    Your login credentials have been sent to your phone via SMS. 
+                                    Your login credentials have been sent to your phone via SMS.
                                     Please make payment within the specified time to secure your booking.
                                 </p>
                             `;
                             $('#bookingSuccessContent').html(successContent);
-                            
+
                             // Close booking modal
                             const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingDetailsModal'));
                             if (bookingModal) bookingModal.hide();
-                            
+
                             // Show success modal (will not auto-close)
                             const successModal = new bootstrap.Modal(document.getElementById('bookingSuccessModal'), {
                                 backdrop: 'static', // Prevent closing by clicking outside
                                 keyboard: false     // Prevent closing with ESC key
                             });
                             successModal.show();
-                            
+
                             // Reset form
                             $form[0].reset();
-                            
+
                             // Don't auto-reload page - let user close modal manually
                         } else {
                             // Show error message
                             $alert.removeClass('d-none alert-success').addClass('alert-danger').html(
                                 '<i class="bi bi-exclamation-circle me-2"></i>' + response.message
                             );
-                            
+
                             // Re-enable submit button
                             $submitBtn.prop('disabled', false);
                             $submitText.text('Complete Booking');
@@ -1427,23 +1427,23 @@
                     },
                     error: function(xhr) {
                         let errorMessage = 'Unable to complete booking. Please try again or contact support if the problem persists.';
-                        
+
                         // Log error for debugging (but don't show to user)
                         console.error('Booking error response:', xhr.responseJSON);
                         console.error('Status:', xhr.status);
                         console.error('Response text:', xhr.responseText);
-                        
+
                         // Clear previous validation errors
                         $form.find('.is-invalid').removeClass('is-invalid');
                         $form.find('.invalid-feedback').text('');
-                        
+
                         if (xhr.responseJSON) {
                             if (xhr.responseJSON.message) {
                                 // Use server message if it's user-friendly
                                 const serverMessage = xhr.responseJSON.message;
                                 // Check if message contains technical details (SQL, database errors, etc.)
-                                if (serverMessage.includes('SQLSTATE') || 
-                                    serverMessage.includes('Duplicate entry') || 
+                                if (serverMessage.includes('SQLSTATE') ||
+                                    serverMessage.includes('Duplicate entry') ||
                                     serverMessage.includes('Integrity constraint') ||
                                     serverMessage.includes('Connection: mysql') ||
                                     serverMessage.includes('for key')) {
@@ -1456,7 +1456,7 @@
                                 // Display validation errors and point to input fields
                                 let errorList = '<ul class="mb-0">';
                                 let firstErrorField = null;
-                                
+
                                 $.each(xhr.responseJSON.errors, function(key, errors) {
                                     $.each(errors, function(index, error) {
                                         // Format field name for display
@@ -1464,7 +1464,7 @@
                                             return l.toUpperCase();
                                         });
                                         errorList += '<li><strong>' + fieldName + ':</strong> ' + error + '</li>';
-                                        
+
                                         // Point to input field
                                         const fieldMap = {
                                             'full_name': '#bookingFullName',
@@ -1474,11 +1474,11 @@
                                             'room_id': '#form_room_id',
                                             'bed_id': '#form_bed_id'
                                         };
-                                        
+
                                         if (fieldMap[key]) {
                                             const $field = $(fieldMap[key]);
                                             $field.addClass('is-invalid');
-                                            
+
                                             // For visible fields, show error message
                                             if ($field.is(':visible')) {
                                                 if ($field.siblings('.invalid-feedback').length === 0) {
@@ -1486,7 +1486,7 @@
                                                 }
                                                 $field.siblings('.invalid-feedback').text(error);
                                             }
-                                            
+
                                             // Track first error field for scrolling
                                             if (!firstErrorField && $field.is(':visible')) {
                                                 firstErrorField = $field;
@@ -1496,7 +1496,7 @@
                                 });
                                 errorList += '</ul>';
                                 errorMessage = errorList;
-                                
+
                                 // Scroll to first error field
                                 if (firstErrorField) {
                                     $('html, body').animate({
@@ -1506,12 +1506,12 @@
                                 }
                             }
                         }
-                        
+
                         // Show error message
                         $alert.removeClass('d-none alert-success').addClass('alert-danger').html(
                             '<i class="bi bi-exclamation-circle me-2"></i>' + errorMessage
                         );
-                        
+
                         // Re-enable submit button
                         $submitBtn.prop('disabled', false);
                         $submitText.text('Complete Booking');
@@ -1571,7 +1571,7 @@
             // Phone number formatting - auto-format to 255XXXXXXXXX
             $('#bookingPhone').on('input', function() {
                 let value = $(this).val().replace(/[^0-9]/g, ''); // Remove non-digits
-                
+
                 // If starts with 0, replace with 255
                 if (value.startsWith('0')) {
                     value = '255' + value.substring(1);
@@ -1582,12 +1582,12 @@
                         value = '255' + value;
                     }
                 }
-                
+
                 // Limit to 12 digits (255 + 9 more)
                 if (value.length > 12) {
                     value = value.substring(0, 12);
                 }
-                
+
                 $(this).val(value);
             });
 

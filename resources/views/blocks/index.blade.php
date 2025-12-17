@@ -37,7 +37,7 @@
                         <tr>
                             <td>
                                 @if($block->image)
-                                    <img src="{{ url('storage/' . $block->image) }}" alt="{{ $block->name }}" 
+                                    <img src="storage/{{ $block->image }}" alt="{{ $block->name }}" 
                                          class="rounded" style="width: 50px; height: 50px; object-fit: cover;"
                                          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\'%3E%3Crect width=\'50\' height=\'50\' fill=\'%23e0e0e0\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\' font-size=\'10\'%3E{{ $block->name }}%3C/text%3E%3C/svg%3E';">
                                 @else

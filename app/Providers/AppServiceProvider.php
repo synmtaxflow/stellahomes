@@ -28,5 +28,21 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('newBookingsCount', $newBookingsCount);
             }
         });
+        
+        // Helper function for cPanel storage paths
+        if (!function_exists('storage_asset')) {
+            function storage_asset($path) {
+                // Check if path starts with storage/
+                if (strpos($path, 'storage/') === 0) {
+                    $path = substr($path, 8); // Remove 'storage/' prefix
+                }
+                
+                // For cPanel, use absolute path
+                $storagePath = '/storage/' . ltrim($path, '/');
+                
+                // Use asset() helper which handles APP_URL automatically
+                return asset($storagePath);
+            }
+        }
     }
 }

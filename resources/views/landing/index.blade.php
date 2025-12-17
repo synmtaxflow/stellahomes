@@ -448,7 +448,7 @@
                                 <div class="position-relative" style="height: 250px; background-color: #f8f9fa; overflow: hidden;">
                                     @if($room->image)
                                         <img class="img-fluid w-100 h-100"
-                                             src="/storage/{{ $room->image }}"
+                                             src="storage/{{ $room->image }}"
                                              alt="{{ $room->name }}"
                                              style="object-fit: cover;"
                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -923,15 +923,15 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="landing pages/lib/easing/easing.min.js"></script>
-    <script src="landing pages/lib/waypoints/waypoints.min.js"></script>
-    <script src="landing pages/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="landing pages/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="landing pages/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="landing pages/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/landing pages/lib/easing/easing.min.js"></script>
+    <script src="/landing pages/lib/waypoints/waypoints.min.js"></script>
+    <script src="/landing pages/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/landing pages/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/landing pages/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/landing pages/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="landing pages/js/main.js"></script>
+    <script src="/landing pages/js/main.js"></script>
 
     <!-- Chatbot and WhatsApp Script -->
     <script>

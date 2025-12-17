@@ -42,7 +42,7 @@ class SettingsController extends Controller
                 // Store raw path for checking if uploaded
                 $settings[$imageKey . '_raw'] = $rawSettings[$imageKey];
                 // Convert to display URL
-                $settings[$imageKey] = '/storage/' . $rawSettings[$imageKey];
+                $settings[$imageKey] = 'storage/' . $rawSettings[$imageKey];
             } else {
                 $settings[$imageKey] = $defaults[$imageKey];
                 $settings[$imageKey . '_raw'] = null;
@@ -79,7 +79,7 @@ class SettingsController extends Controller
         $settings['hostel_name'] = $hostelDetail->hostel_name ?? 'ISACK HOSTEL';
         $settings['hostel_description'] = $hostelDetail->description ?? null;
         if ($hostelDetail->logo) {
-            $settings['hostel_logo'] = '/storage/' . $hostelDetail->logo;
+            $settings['hostel_logo'] = 'storage/' . $hostelDetail->logo;
             $settings['hostel_logo_raw'] = $hostelDetail->logo;
         } else {
             $settings['hostel_logo'] = null;

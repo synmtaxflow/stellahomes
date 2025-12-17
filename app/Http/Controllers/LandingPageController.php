@@ -76,7 +76,7 @@ class LandingPageController extends Controller
             // For images stored in storage, prepend storage path
             if ($key === 'hero_image' || $key === 'about_image') {
                 if (isset($rawSettings[$key]) && !empty($rawSettings[$key])) {
-                    $settings[$key] = '/storage/' . $rawSettings[$key];
+                    $settings[$key] = 'storage/' . $rawSettings[$key];
                 } else {
                     $settings[$key] = $defaultValue;
                 }

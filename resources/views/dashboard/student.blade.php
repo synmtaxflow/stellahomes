@@ -10,7 +10,7 @@
             <!-- Profile Picture -->
             <div class="position-relative d-inline-block mb-3">
                 <img 
-                    src="{{ $user->profile_picture ? '/storage/' . $user->profile_picture : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=120&background=1e3c72&color=fff' }}" 
+                    src="{{ $user->profile_picture ? 'storage/' . $user->profile_picture : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=120&background=1e3c72&color=fff' }}" 
                     alt="Profile Picture" 
                     class="rounded-circle border border-3 border-primary"
                     style="width: 100px; height: 100px; object-fit: cover;"
@@ -408,7 +408,7 @@
                 <div class="modal-body">
                     <div class="mb-3 text-center">
                         <img 
-                            src="{{ $user->profile_picture ? '/storage/' . $user->profile_picture : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=200&background=1e3c72&color=fff' }}" 
+                            src="{{ $user->profile_picture ? 'storage/' . $user->profile_picture : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&size=200&background=1e3c72&color=fff' }}" 
                             alt="Preview" 
                             class="rounded-circle border border-2 border-primary mb-3"
                             style="width: 150px; height: 150px; object-fit: cover;"

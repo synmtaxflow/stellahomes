@@ -61,8 +61,8 @@ class LandingPageController extends Controller
         
         // Default values for images and colors
         $defaults = [
-            'hero_image' => asset('landing pages/img/hero.jpg'),
-            'about_image' => asset('landing pages/img/about.jpg'),
+            'hero_image' => '/landing pages/img/hero.jpg',
+            'about_image' => '/landing pages/img/about.jpg',
             'primary_color' => '#1e3c72',
             'secondary_color' => '#2a5298',
             'light_color' => '#EFF5F9',
@@ -76,7 +76,7 @@ class LandingPageController extends Controller
             // For images stored in storage, prepend storage path
             if ($key === 'hero_image' || $key === 'about_image') {
                 if (isset($rawSettings[$key]) && !empty($rawSettings[$key])) {
-                    $settings[$key] = asset('storage/' . $rawSettings[$key]);
+                    $settings[$key] = '/storage/' . $rawSettings[$key];
                 } else {
                     $settings[$key] = $defaultValue;
                 }

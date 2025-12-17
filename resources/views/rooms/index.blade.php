@@ -37,7 +37,7 @@
                         <tr data-room-id="{{ $room->id }}">
                             <td>
                                 @if($room->image)
-                                    <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}" 
+                                    <img src="/storage/{{ $room->image }}" alt="{{ $room->name }}" 
                                          class="rounded" style="width: 60px; height: 60px; object-fit: cover;"
                                          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect width=\'60\' height=\'60\' fill=\'%23e0e0e0\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\' font-size=\'10\'%3ERoom%3C/text%3E%3C/svg%3E';">
                                 @else

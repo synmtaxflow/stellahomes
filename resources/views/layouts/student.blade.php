@@ -418,7 +418,7 @@
                             <a class="dropdown-toggle d-flex align-items-center text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #697a8d;">
                                 <div class="d-flex align-items-center">
                                     <img 
-                                        src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&size=32&background=1e3c72&color=fff' }}" 
+                                        src="{{ Auth::user()->profile_picture ? '/storage/' . Auth::user()->profile_picture : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&size=32&background=1e3c72&color=fff' }}" 
                                         alt="Profile" 
                                         class="rounded-circle me-2"
                                         style="width: 32px; height: 32px; object-fit: cover;"

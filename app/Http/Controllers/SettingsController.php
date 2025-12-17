@@ -17,8 +17,8 @@ class SettingsController extends Controller
         
         // Default values if not set
         $defaults = [
-            'hero_image' => asset('landing pages/img/hero.jpg'),
-            'about_image' => asset('landing pages/img/about.jpg'),
+            'hero_image' => '/landing pages/img/hero.jpg',
+            'about_image' => '/landing pages/img/about.jpg',
             'primary_color' => '#1e3c72',
             'secondary_color' => '#2a5298',
             'light_color' => '#EFF5F9',
@@ -42,7 +42,7 @@ class SettingsController extends Controller
                 // Store raw path for checking if uploaded
                 $settings[$imageKey . '_raw'] = $rawSettings[$imageKey];
                 // Convert to display URL
-                $settings[$imageKey] = asset('storage/' . $rawSettings[$imageKey]);
+                $settings[$imageKey] = '/storage/' . $rawSettings[$imageKey];
             } else {
                 $settings[$imageKey] = $defaults[$imageKey];
                 $settings[$imageKey . '_raw'] = null;
@@ -79,7 +79,7 @@ class SettingsController extends Controller
         $settings['hostel_name'] = $hostelDetail->hostel_name ?? 'ISACK HOSTEL';
         $settings['hostel_description'] = $hostelDetail->description ?? null;
         if ($hostelDetail->logo) {
-            $settings['hostel_logo'] = asset('storage/' . $hostelDetail->logo);
+            $settings['hostel_logo'] = '/storage/' . $hostelDetail->logo;
             $settings['hostel_logo_raw'] = $hostelDetail->logo;
         } else {
             $settings['hostel_logo'] = null;

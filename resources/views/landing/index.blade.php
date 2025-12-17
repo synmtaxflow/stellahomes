@@ -226,7 +226,7 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
                         <a href="{{ route('landing') }}" class="nav-item nav-link active">Home</a>
-                        <a href="#about" class="nav-item nav-link">about</a>
+                        <a href="#about" class="nav-item nav-link">stell</a>
                         <a href="#rooms" class="nav-item nav-link">Rooms</a>
                         <a href="#facilities" class="nav-item nav-link">Facilities</a>
                         <a href="#booking" class="nav-item nav-link">Book Now</a>

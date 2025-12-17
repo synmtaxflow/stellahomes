@@ -448,7 +448,7 @@
                                 <div class="position-relative" style="height: 250px; background-color: #f8f9fa; overflow: hidden;">
                                     @if($room->image)
                                         <img class="img-fluid w-100 h-100"
-                                             src="storage/{{ $room->image }}"
+                                             src="/storage/{{ $room->image }}"
                                              alt="{{ $room->name }}"
                                              style="object-fit: cover;"
                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">

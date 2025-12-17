@@ -67,7 +67,7 @@
                             <label for="profile_image" class="form-label">Profile Image</label>
                             @if(isset($ownerDetail) && $ownerDetail->profile_image)
                                 <div class="mb-2">
-                                    <img src="storage/{{ $ownerDetail->profile_image }}" 
+                                    <img src="/storage/{{ $ownerDetail->profile_image }}" 
                                          alt="Profile Image" 
                                          class="img-thumbnail" 
                                          style="max-width: 200px; max-height: 200px; object-fit: cover;">

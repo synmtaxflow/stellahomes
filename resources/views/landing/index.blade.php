@@ -256,7 +256,7 @@
                 <div class="col-lg-8 text-center text-lg-start">
                     <h5 class="d-inline-block text-white text-uppercase border-bottom border-5"
                         style="border-color: rgba(256, 256, 256, .3) !important;">Welcome To {{ $settings['hostel_name'] ?? 'ISACK HOSTEL' }}</h5>
-                    <h1 class="display-1 text-white mb-md-4">Your Home Away From Home</h1>
+                    <h1 class="display-1 text-white mb-md-4"> Your Home Away From Home</h1>
                     <p class="fs-4 fw-normal text-white mb-4">Comfortable, safe, and affordable student accommodation with modern facilities</p>
                     <div class="pt-2">
                         <a href="#booking" class="btn btn-light rounded-pill py-md-3 px-md-5 mx-2">Book Now</a>
@@ -843,6 +843,11 @@
                 </div>
                 <div class="col-md-6 text-center text-md-end">
                     <p class="mb-0">Designed for <a class="text-primary" href="#!">{{ $settings['hostel_name'] ?? 'ISACK HOSTEL' }}</a> - Student Accommodation Management System</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <p class="mb-0 text-white">Powered by <a href="https://emca.tech/" target="_blank" class="text-white text-decoration-none" style="text-decoration: underline !important;">EmCa Technology</a></p>
                 </div>
             </div>
         </div>

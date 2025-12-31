@@ -633,6 +633,65 @@
         });
     </script>
     
+    <!-- Auto-logout script for idle detection (3 minutes) -->
+    <script>
+        (function() {
+            let idleTimer;
+            const idleTimeout = 3 * 60 * 1000; // 3 minutes in milliseconds
+            const logoutUrl = '{{ route("logout") }}';
+            const csrfToken = '{{ csrf_token() }}';
+            
+            // Events that indicate user activity
+            const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+            
+            function resetIdleTimer() {
+                clearTimeout(idleTimer);
+                idleTimer = setTimeout(function() {
+                    // User has been idle for 3 minutes, logout
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Session Timeout',
+                        text: 'You have been inactive for 3 minutes. You will be logged out for security reasons.',
+                        confirmButtonText: 'OK',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    }).then(function() {
+                        // Create and submit logout form
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = logoutUrl;
+                        
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = csrfToken;
+                        form.appendChild(csrfInput);
+                        
+                        document.body.appendChild(form);
+                        form.submit();
+                    });
+                }, idleTimeout);
+            }
+            
+            // Initialize timer
+            resetIdleTimer();
+            
+            // Listen for user activity
+            activityEvents.forEach(function(event) {
+                document.addEventListener(event, resetIdleTimer, true);
+            });
+            
+            // Also listen for visibility change (tab switch)
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    resetIdleTimer();
+                }
+            });
+        })();
+    </script>
+    
     @stack('scripts')
 </body>
 </html>

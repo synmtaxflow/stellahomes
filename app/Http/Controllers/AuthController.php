@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Student;
+use App\Models\OtpVerification;
 use App\Services\SmsService;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -33,6 +35,33 @@ class AuthController extends Controller
         $user = User::where('username', $credentials['username'])->first();
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
+            // If user is owner, require OTP verification
+            if ($user->role === 'owner') {
+                // Get phone number
+                $phoneNumber = $this->getPhoneNumberByRole($user);
+                
+                if (!$phoneNumber) {
+                    return back()->withErrors([
+                        'username' => 'Phone number not found for your account. Please contact administrator.',
+                    ])->onlyInput('username');
+                }
+
+                // Create OTP and send via SMS
+                $otp = OtpVerification::createForUser($user->id, $phoneNumber, 10);
+                
+                $smsService = new SmsService();
+                $message = "Your OTP code for login is: {$otp->otp_code}. This code will expire in 10 minutes. Do not share this code with anyone.";
+                
+                $smsResult = $smsService->sendSms($phoneNumber, $message);
+
+                // Store user ID in session for OTP verification
+                $request->session()->put('otp_user_id', $user->id);
+                $request->session()->put('otp_verification_id', $otp->id);
+
+                return redirect()->route('otp.verify')->with('success', 'OTP code has been sent to your phone number. Please enter it to complete login.');
+            }
+
+            // For non-owner users, login directly
             Auth::login($user, $request->filled('remember'));
             $request->session()->regenerate();
             
@@ -179,6 +208,151 @@ class AuthController extends Controller
             $password .= $characters[rand(0, strlen($characters) - 1)];
         }
         return $password;
+    }
+
+    /**
+     * Show OTP verification form
+     */
+    public function showOtpVerificationForm()
+    {
+        if (!session('otp_user_id')) {
+            return redirect()->route('login')->withErrors([
+                'username' => 'Please login first to receive OTP code.',
+            ]);
+        }
+
+        $user = User::find(session('otp_user_id'));
+        if (!$user) {
+            session()->forget(['otp_user_id', 'otp_verification_id']);
+            return redirect()->route('login')->withErrors([
+                'username' => 'User not found. Please try again.',
+            ]);
+        }
+
+        $phoneNumber = $this->getPhoneNumberByRole($user);
+        $maskedPhone = $phoneNumber ? substr($phoneNumber, 0, 4) . '****' . substr($phoneNumber, -4) : 'N/A';
+
+        return view('auth.otp-verify', [
+            'maskedPhone' => $maskedPhone,
+        ]);
+    }
+
+    /**
+     * Verify OTP code
+     */
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'otp_code' => 'required|string|size:6',
+        ]);
+
+        $userId = session('otp_user_id');
+        $otpVerificationId = session('otp_verification_id');
+
+        if (!$userId || !$otpVerificationId) {
+            return redirect()->route('login')->withErrors([
+                'username' => 'Session expired. Please login again.',
+            ]);
+        }
+
+        $user = User::find($userId);
+        if (!$user) {
+            session()->forget(['otp_user_id', 'otp_verification_id']);
+            return redirect()->route('login')->withErrors([
+                'username' => 'User not found. Please try again.',
+            ]);
+        }
+
+        $otp = OtpVerification::where('id', $otpVerificationId)
+            ->where('user_id', $userId)
+            ->where('is_verified', false)
+            ->first();
+
+        if (!$otp) {
+            return back()->withErrors([
+                'otp_code' => 'Invalid or expired OTP code. Please request a new one.',
+            ])->withInput();
+        }
+
+        if ($otp->isExpired()) {
+            return back()->withErrors([
+                'otp_code' => 'OTP code has expired. Please request a new one.',
+            ])->withInput();
+        }
+
+        if ($otp->otp_code !== $request->otp_code) {
+            return back()->withErrors([
+                'otp_code' => 'Invalid OTP code. Please try again.',
+            ])->withInput();
+        }
+
+        // OTP is valid, mark as verified and login user
+        $otp->markAsVerified();
+
+        Auth::login($user, $request->filled('remember'));
+        $request->session()->regenerate();
+        
+        // Clear OTP session data
+        $request->session()->forget(['otp_user_id', 'otp_verification_id']);
+
+        return redirect()->intended($this->redirectTo($user->role))->with('success', 'Login successful!');
+    }
+
+    /**
+     * Resend OTP code
+     */
+    public function resendOtp(Request $request)
+    {
+        $userId = session('otp_user_id');
+
+        if (!$userId) {
+            return redirect()->route('login')->withErrors([
+                'username' => 'Session expired. Please login again.',
+            ]);
+        }
+
+        $user = User::find($userId);
+        if (!$user) {
+            session()->forget(['otp_user_id', 'otp_verification_id']);
+            return redirect()->route('login')->withErrors([
+                'username' => 'User not found. Please try again.',
+            ]);
+        }
+
+        // Check if last OTP was sent less than 2 minutes ago
+        $lastOtp = OtpVerification::where('user_id', $userId)
+            ->where('is_verified', false)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($lastOtp && $lastOtp->created_at->diffInSeconds(now()) < 120) {
+            $remainingSeconds = 120 - $lastOtp->created_at->diffInSeconds(now());
+            return back()->withErrors([
+                'otp_code' => "Please wait {$remainingSeconds} seconds before requesting a new OTP code.",
+            ]);
+        }
+
+        // Get phone number
+        $phoneNumber = $this->getPhoneNumberByRole($user);
+        
+        if (!$phoneNumber) {
+            return back()->withErrors([
+                'otp_code' => 'Phone number not found for your account. Please contact administrator.',
+            ]);
+        }
+
+        // Create new OTP and send via SMS
+        $otp = OtpVerification::createForUser($user->id, $phoneNumber, 10);
+        
+        $smsService = new SmsService();
+        $message = "Your OTP code for login is: {$otp->otp_code}. This code will expire in 10 minutes. Do not share this code with anyone.";
+        
+        $smsResult = $smsService->sendSms($phoneNumber, $message);
+
+        // Update session with new OTP verification ID
+        $request->session()->put('otp_verification_id', $otp->id);
+
+        return redirect()->route('otp.verify')->with('success', 'New OTP code has been sent to your phone number.');
     }
 }
 

@@ -30,6 +30,15 @@ class BookingController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // Get paid bookings (students with active status who have made payments)
+        $paidBookings = Student::with(['room', 'bed', 'payments'])
+            ->where('status', 'active')
+            ->whereHas('payments', function($query) {
+                $query->where('status', 'completed');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         // Get booking timeout from contacts table
         $contact = Contact::getContact();
         $timeoutHours = $contact->booking_timeout_hours ?? 24;
@@ -96,7 +105,26 @@ class BookingController extends Controller
             ];
         });
 
-        return view('bookings.index', compact('bookings', 'timeoutHours'));
+        // Map paid bookings with payment info
+        $paidBookingsData = $paidBookings->map(function($booking) {
+            $lastPayment = $booking->payments()
+                ->where('status', 'completed')
+                ->orderBy('payment_date', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            return [
+                'id' => $booking->id,
+                'student' => $booking,
+                'room' => $booking->room,
+                'bed' => $booking->bed,
+                'last_payment' => $lastPayment,
+                'total_paid' => $booking->payments()->where('status', 'completed')->sum('amount'),
+                'payment_date' => $lastPayment ? $lastPayment->payment_date : null,
+            ];
+        });
+
+        return view('bookings.index', compact('bookings', 'paidBookingsData', 'timeoutHours'));
     }
 
     /**

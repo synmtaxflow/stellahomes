@@ -33,6 +33,31 @@
         </div>
     </div>
 
+    <!-- Reserve Amount Section (Show at top for active students) -->
+    @if($student && $student->status === 'active')
+    <div class="card border-0 shadow-sm mb-3 border-success" id="balance-section">
+        <div class="card-header bg-success text-white">
+            <h6 class="mb-0"><i class="bi bi-wallet2 me-2"></i>Reserve Amount (Balance Yangu)</h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <h4 class="mb-0 text-success">Tsh {{ number_format($balance, 0) }}</h4>
+                    <small class="text-muted">Salio lako linaloweza kutumika kwa malipo ya baadaye</small>
+                </div>
+                @if($totalPaid > 0)
+                <div class="col-md-6">
+                    <div class="text-end">
+                        <small class="text-muted d-block">Jumla yaliyolipwa:</small>
+                        <h5 class="mb-0 text-info">Tsh {{ number_format($totalPaid, 0) }}</h5>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endif
+
     @if($student && $student->status === 'booked' && isset($expiresAt))
         <!-- Booking Time Remaining Card -->
         <div class="card border-0 shadow-sm mb-3" id="timeRemainingCard">
@@ -253,8 +278,13 @@
             <h6 class="mb-3"><i class="bi bi-info-circle me-2"></i>Hali ya Booking</h6>
             <div class="d-flex align-items-center justify-content-between">
                 <span class="text-muted small">Status:</span>
-                <span class="badge bg-{{ $student->status === 'active' ? 'success' : ($student->status === 'booked' ? 'warning' : 'secondary') }} fs-6">
-                    {{ ucfirst($student->status) }}
+                @php
+                    $hasPayments = $student->status === 'active' && $totalPaid > 0;
+                    $statusText = $hasPayments ? 'Paid' : ucfirst($student->status);
+                    $statusColor = $hasPayments ? 'success' : ($student->status === 'active' ? 'success' : ($student->status === 'booked' ? 'warning' : 'secondary'));
+                @endphp
+                <span class="badge bg-{{ $statusColor }} fs-6">
+                    {{ $statusText }}
                 </span>
             </div>
             @if($student->check_in_date)
@@ -267,37 +297,15 @@
     </div>
     @endif
 
-    <!-- Rent End Date and Balance Section -->
-    @if($student && $student->status === 'active')
-    <div class="row g-3 mb-3" id="balance-section">
-        @if($rentEndDate)
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm border-primary">
-                <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0"><i class="bi bi-calendar-x me-2"></i>Kodi Inaisha</h6>
-                </div>
-                <div class="card-body">
-                    <h4 class="mb-0 text-primary">{{ $rentEndDate->format('d F Y') }}</h4>
-                    <small class="text-muted">Rent period inaisha tarehe hii</small>
-                </div>
-            </div>
+    <!-- Rent End Date Section -->
+    @if($student && $student->status === 'active' && $rentEndDate)
+    <div class="card border-0 shadow-sm mb-3 border-primary">
+        <div class="card-header bg-primary text-white">
+            <h6 class="mb-0"><i class="bi bi-calendar-x me-2"></i>Kodi Inaisha</h6>
         </div>
-        @endif
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm border-success">
-                <div class="card-header bg-success text-white">
-                    <h6 class="mb-0"><i class="bi bi-wallet2 me-2"></i>Balance Yangu</h6>
-                </div>
-                <div class="card-body">
-                    <h4 class="mb-0 text-success">Tsh {{ number_format($balance, 0) }}</h4>
-                    <small class="text-muted">Reserve amount (salio lako)</small>
-                    @if($totalPaid > 0)
-                    <div class="mt-2">
-                        <small class="text-info">Jumla yaliyolipwa: Tsh {{ number_format($totalPaid, 0) }}</small>
-                    </div>
-                    @endif
-                </div>
-            </div>
+        <div class="card-body">
+            <h4 class="mb-0 text-primary">{{ $rentEndDate->format('d F Y') }}</h4>
+            <small class="text-muted">Rent period inaisha tarehe hii</small>
         </div>
     </div>
     @endif

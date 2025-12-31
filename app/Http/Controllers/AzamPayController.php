@@ -353,11 +353,19 @@ class AzamPayController extends Controller
             $controlNumber->updateBalance();
             $controlNumber->save();
 
+            // Update student status to active if payment is completed
+            if ($student->status === 'booked') {
+                $student->update(['status' => 'active']);
+            }
+
             // Update bed status to occupied if payment is completed and bed exists
             if ($student->bed_id) {
                 $bed = Bed::find($student->bed_id);
-                if ($bed && $bed->status === 'pending_payment') {
-                    $bed->update(['status' => 'occupied']);
+                if ($bed) {
+                    $bed->update([
+                        'status' => 'occupied',
+                        'booking_expires_at' => null,
+                    ]);
                 }
             }
 

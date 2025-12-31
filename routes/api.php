@@ -27,3 +27,4 @@ Route::post('/merchant/name-lookup', [AzamPayController::class, 'nameLookup']);
 Route::post('/merchant/payment', [AzamPayController::class, 'payment']);
 Route::post('/merchant/status-check', [AzamPayController::class, 'statusCheck']);
 
+ 

@@ -384,13 +384,11 @@
                     </a>
                 </li>
                 <li class="nav-link">
-                    <form action="{{ route('logout') }}" method="POST" class="d-inline w-100">
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline w-100" id="logoutForm">
                         @csrf
-                        <button type="submit" class="w-100 text-start border-0 bg-transparent p-0" style="color: #dc3545;">
-                            <a style="color: #dc3545; cursor: pointer;">
-                                <i class="bi bi-box-arrow-right nav-item-icon"></i>
-                                <span class="nav-item-title">Logout</span>
-                            </a>
+                        <button type="submit" class="w-100 text-start border-0 bg-transparent p-0 d-flex align-items-center" style="color: #dc3545; cursor: pointer; text-decoration: none;">
+                            <i class="bi bi-box-arrow-right nav-item-icon"></i>
+                            <span class="nav-item-title">Logout</span>
                         </button>
                     </form>
                 </li>
@@ -573,34 +571,53 @@
         }
         
         // Close sidebar on mobile when link is clicked and handle scroll to section
-        document.querySelectorAll('.nav-link a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                // Handle scroll to section
-                if (this.classList.contains('scroll-to-section')) {
-                    e.preventDefault();
-                    var href = this.getAttribute('href');
-                    var sectionId = href.split('#')[1];
-                    
-                    if (sectionId) {
-                        var section = document.getElementById(sectionId);
-                        if (section) {
-                            // Close sidebar on mobile
-                            if (window.innerWidth < 992) {
-                                verticalNav.classList.remove('visible');
-                                if (layoutOverlay) {
-                                    layoutOverlay.classList.remove('visible');
-                                }
-                                document.body.style.overflow = '';
+        // Use event delegation to handle dynamically added links
+        document.addEventListener('click', function(e) {
+            // Skip if clicking on logout form button
+            if (e.target.closest('#logoutForm button')) {
+                return; // Let form submit normally
+            }
+            
+            const link = e.target.closest('.nav-link a');
+            if (!link) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Handle scroll to section
+            if (link.classList.contains('scroll-to-section')) {
+                var href = link.getAttribute('href');
+                var sectionId = href ? href.split('#')[1] : null;
+                
+                if (sectionId) {
+                    var section = document.getElementById(sectionId);
+                    if (section) {
+                        // Close sidebar on mobile
+                        if (window.innerWidth < 992) {
+                            verticalNav.classList.remove('visible');
+                            if (layoutOverlay) {
+                                layoutOverlay.classList.remove('visible');
                             }
-                            
-                            // Scroll to section
-                            setTimeout(function() {
-                                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            }, 100);
+                            document.body.style.overflow = '';
                         }
+                        
+                        // Scroll to section
+                        setTimeout(function() {
+                            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 100);
+                    } else {
+                        // If section not found, navigate to dashboard first
+                        window.location.href = href.split('#')[0];
                     }
                 } else {
-                    // Regular link - just close sidebar on mobile
+                    // No section ID, just navigate
+                    window.location.href = href;
+                }
+            } else {
+                // Regular link - navigate normally
+                var href = link.getAttribute('href');
+                if (href) {
+                    // Close sidebar on mobile
                     if (window.innerWidth < 992) {
                         verticalNav.classList.remove('visible');
                         if (layoutOverlay) {
@@ -608,8 +625,11 @@
                         }
                         document.body.style.overflow = '';
                     }
+                    
+                    // Navigate to link
+                    window.location.href = href;
                 }
-            });
+            }
         });
     </script>
     

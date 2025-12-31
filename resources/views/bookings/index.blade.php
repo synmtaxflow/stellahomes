@@ -32,7 +32,11 @@
         </div>
     @endif
 
-    <div class="card border-0 shadow-sm">
+    <!-- Pending Bookings Section -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Pending Bookings</h5>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover" id="bookingsTable">
@@ -177,6 +181,70 @@
             </div>
         </div>
     </div>
+
+    <!-- Paid Bookings Section -->
+    @if(isset($paidBookingsData) && $paidBookingsData->count() > 0)
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="bi bi-check-circle me-2"></i>Paid Bookings</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="paidBookingsTable">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Contact</th>
+                            <th>Room/Bed</th>
+                            <th>Booking Date</th>
+                            <th>Payment Date</th>
+                            <th>Total Paid</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($paidBookingsData as $paidBooking)
+                        <tr>
+                            <td>
+                                <strong>{{ $paidBooking['student']->full_name }}</strong><br>
+                                <small class="text-muted">{{ $paidBooking['student']->student_number }}</small>
+                            </td>
+                            <td>
+                                <i class="bi bi-telephone me-1"></i>{{ $paidBooking['student']->phone }}<br>
+                                <i class="bi bi-envelope me-1"></i>{{ $paidBooking['student']->email }}
+                            </td>
+                            <td>
+                                <strong>{{ $paidBooking['room']->name ?? 'N/A' }}</strong>
+                                @if($paidBooking['bed'])
+                                    <br><span class="badge bg-info">Bed: {{ $paidBooking['bed']->name }}</span>
+                                @else
+                                    <br><span class="badge bg-secondary">Key Room</span>
+                                @endif
+                            </td>
+                            <td>
+                                {{ $paidBooking['student']->created_at->format('d M Y, h:i A') }}
+                            </td>
+                            <td>
+                                @if($paidBooking['payment_date'])
+                                    {{ \Carbon\Carbon::parse($paidBooking['payment_date'])->format('d M Y') }}
+                                @else
+                                    <span class="text-muted">N/A</span>
+                                @endif
+                            </td>
+                            <td>
+                                <strong class="text-success">Tsh {{ number_format($paidBooking['total_paid'], 0) }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-success">Paid</span>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 @push('scripts')

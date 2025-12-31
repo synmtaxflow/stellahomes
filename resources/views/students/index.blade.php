@@ -254,8 +254,13 @@
                                 <input type="email" class="form-control" id="email" name="email">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="text" class="form-control" id="phone" name="phone">
+                                <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phone" name="phone" placeholder="255612345678" pattern="^255\d{9}$" required maxlength="12" autocomplete="tel">
+                                <small class="text-muted">
+                                    <span id="phoneHint">Phone number must start with 255 followed by 9 digits (e.g., 255612345678)</span>
+                                    <span id="phoneLength" class="float-end text-muted"></span>
+                                </small>
+                                <div class="invalid-feedback" id="phoneError"></div>
                             </div>
                         </div>
 
@@ -436,8 +441,12 @@
                             <input type="email" class="form-control" id="editEmail" name="email">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="editPhone" class="form-label">Phone</label>
-                            <input type="text" class="form-control" id="editPhone" name="phone">
+                            <label for="editPhone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editPhone" name="phone" placeholder="255612345678" pattern="^255\d{9}$" required maxlength="12">
+                            <small class="text-muted">
+                                <span id="editPhoneHint">Phone number must start with 255 followed by 9 digits (e.g., 255612345678)</span>
+                                <span id="editPhoneLength" class="float-end text-muted"></span>
+                            </small>
                         </div>
                     </div>
 
@@ -658,12 +667,19 @@
         }
 
         // Show student details when bed is selected
-        $('#studentBed').on('change', function() {
+        $(document).on('change', '#studentBed', function() {
             const selectedBed = $(this).val();
             const studentDetailsSection = $('.student-details-section');
             
             if (selectedBed && selectedBed !== '') {
-                studentDetailsSection.slideDown();
+                studentDetailsSection.slideDown(function() {
+                    // Initialize phone validation when section is shown
+                    const phoneInput = $('#phone');
+                    if (phoneInput.length) {
+                        // Trigger validation on first show
+                        phoneInput.trigger('input');
+                    }
+                });
             } else {
                 studentDetailsSection.slideUp();
             }
@@ -673,13 +689,57 @@
         $('#addStudentForm').on('submit', function(e) {
             e.preventDefault();
             
+            const form = $(this)[0];
+            const formErrors = $('#formErrors');
+            const phoneInput = $('#phone');
+            const phoneValue = phoneInput.val().trim();
+            
+            // Clear previous errors
+            formErrors.addClass('d-none').html('');
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            
+            // Client-side validation
+            let hasErrors = false;
+            let errorMessages = [];
+            
+            // Validate phone number
+            if (!phoneValue) {
+                phoneInput.addClass('is-invalid');
+                phoneInput.after('<div class="invalid-feedback">Phone number is required.</div>');
+                hasErrors = true;
+                errorMessages.push('Phone number is required.');
+            } else if (!/^255\d{9}$/.test(phoneValue)) {
+                phoneInput.addClass('is-invalid');
+                phoneInput.after('<div class="invalid-feedback">Phone number must start with 255 followed by 9 digits (e.g., 255612345678).</div>');
+                hasErrors = true;
+                errorMessages.push('Phone number must start with 255 followed by 9 digits (e.g., 255612345678).');
+            }
+            
+            // Check HTML5 validation
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                hasErrors = true;
+            }
+            
+            // If there are client-side errors, stop submission
+            if (hasErrors) {
+                if (errorMessages.length > 0) {
+                    let errors = '<ul class="mb-0">';
+                    errorMessages.forEach(function(msg) {
+                        errors += '<li>' + msg + '</li>';
+                    });
+                    errors += '</ul>';
+                    formErrors.removeClass('d-none').html(errors);
+                }
+                return false;
+            }
+            
             const formData = $(this).serialize();
             const submitBtn = $('#submitStudentBtn');
             const submitSpinner = $('#submitStudentSpinner');
             const submitText = $('#submitStudentText');
-            const formErrors = $('#formErrors');
             
-            formErrors.addClass('d-none').html('');
             submitBtn.prop('disabled', true);
             submitSpinner.removeClass('d-none');
             submitText.text('Registering...');
@@ -727,6 +787,128 @@
                 }
             });
         });
+
+        // Real-time phone validation function
+        function validatePhoneNumber(phoneInput) {
+            const phoneValue = phoneInput.val().trim();
+            const inputId = phoneInput.attr('id');
+            const lengthSpan = inputId === 'phone' ? $('#phoneLength') : $('#editPhoneLength');
+            
+            // Update character count
+            if (lengthSpan.length) {
+                const length = phoneValue.length;
+                const maxLength = 12;
+                if (length > 0) {
+                    lengthSpan.text(`${length}/${maxLength}`);
+                    if (length === maxLength && /^255\d{9}$/.test(phoneValue)) {
+                        lengthSpan.removeClass('text-muted text-danger').addClass('text-success');
+                    } else if (length > maxLength) {
+                        lengthSpan.removeClass('text-muted text-success').addClass('text-danger');
+                    } else {
+                        lengthSpan.removeClass('text-success text-danger').addClass('text-muted');
+                    }
+                } else {
+                    lengthSpan.text('');
+                }
+            }
+            
+            // Remove previous validation classes and messages
+            phoneInput.removeClass('is-invalid is-valid');
+            phoneInput.siblings('.invalid-feedback').remove();
+            phoneInput.next('.invalid-feedback').remove();
+            
+            if (!phoneValue) {
+                phoneInput.addClass('is-invalid');
+                phoneInput.after('<div class="invalid-feedback">Phone number is required.</div>');
+                return false;
+            } else if (phoneValue.length < 12) {
+                phoneInput.addClass('is-invalid');
+                phoneInput.after('<div class="invalid-feedback">Phone number must be 12 digits (255 + 9 digits).</div>');
+                return false;
+            } else if (!/^255\d{9}$/.test(phoneValue)) {
+                phoneInput.addClass('is-invalid');
+                if (!phoneValue.startsWith('255')) {
+                    phoneInput.after('<div class="invalid-feedback">Phone number must start with 255.</div>');
+                } else {
+                    phoneInput.after('<div class="invalid-feedback">Phone number must have exactly 9 digits after 255 (e.g., 255612345678).</div>');
+                }
+                return false;
+            } else {
+                phoneInput.addClass('is-valid');
+                return true;
+            }
+        }
+
+        // Real-time phone validation for register form (using event delegation)
+        $(document).on('input keyup paste blur', '#phone', function(e) {
+            // Allow only numbers
+            let value = $(this).val().replace(/[^0-9]/g, '');
+            if (value.length > 12) {
+                value = value.substring(0, 12);
+            }
+            $(this).val(value);
+            validatePhoneNumber($(this));
+        });
+
+        // Real-time phone validation for edit form (using event delegation)
+        $(document).on('input keyup paste blur', '#editPhone', function(e) {
+            // Allow only numbers
+            let value = $(this).val().replace(/[^0-9]/g, '');
+            if (value.length > 12) {
+                value = value.substring(0, 12);
+            }
+            $(this).val(value);
+            validatePhoneNumber($(this));
+        });
+
+        // Initialize validation when modals are shown
+        $('#addStudentModal').on('shown.bs.modal', function() {
+            // Attach validation to phone input
+            const phoneInput = $('#phone');
+            if (phoneInput.length) {
+                // Validate phone if it has value
+                if (phoneInput.val()) {
+                    validatePhoneNumber(phoneInput);
+                }
+                // Focus on phone input to trigger validation
+                phoneInput.on('focus', function() {
+                    validatePhoneNumber($(this));
+                });
+            }
+        });
+
+        $('#editStudentModal').on('shown.bs.modal', function() {
+            // Attach validation to phone input
+            const phoneInput = $('#editPhone');
+            if (phoneInput.length) {
+                // Validate phone if it has value
+                if (phoneInput.val()) {
+                    validatePhoneNumber(phoneInput);
+                }
+                // Focus on phone input to trigger validation
+                phoneInput.on('focus', function() {
+                    validatePhoneNumber($(this));
+                });
+            }
+        });
+
+        // Ensure validation works when student details section is shown
+        // Use setInterval to check for visibility (fallback for older browsers)
+        setInterval(function() {
+            const phoneInput = $('#phone');
+            if (phoneInput.length && phoneInput.is(':visible') && !phoneInput.data('validation-attached')) {
+                phoneInput.data('validation-attached', true);
+                // Ensure validation is attached
+                phoneInput.off('input keyup paste blur').on('input keyup paste blur', function(e) {
+                    let value = $(this).val().replace(/[^0-9]/g, '');
+                    if (value.length > 12) {
+                        value = value.substring(0, 12);
+                    }
+                    $(this).val(value);
+                    validatePhoneNumber($(this));
+                });
+            }
+        }, 500);
 
         // View student
         $(document).on('click', '.view-student', function() {
@@ -842,6 +1024,55 @@
         // Handle edit student form submission
         $('#editStudentForm').on('submit', function(e) {
             e.preventDefault();
+            
+            const form = $(this)[0];
+            const formErrors = $('#editFormErrors');
+            const phoneInput = $('#editPhone');
+            const phoneValue = phoneInput.val().trim();
+            
+            // Clear previous errors
+            if (formErrors.length) {
+                formErrors.addClass('d-none').html('');
+            }
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            
+            // Client-side validation
+            let hasErrors = false;
+            let errorMessages = [];
+            
+            // Validate phone number
+            if (!phoneValue) {
+                phoneInput.addClass('is-invalid');
+                phoneInput.after('<div class="invalid-feedback">Phone number is required.</div>');
+                hasErrors = true;
+                errorMessages.push('Phone number is required.');
+            } else if (!/^255\d{9}$/.test(phoneValue)) {
+                phoneInput.addClass('is-invalid');
+                phoneInput.after('<div class="invalid-feedback">Phone number must start with 255 followed by 9 digits (e.g., 255612345678).</div>');
+                hasErrors = true;
+                errorMessages.push('Phone number must start with 255 followed by 9 digits (e.g., 255612345678).');
+            }
+            
+            // Check HTML5 validation
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                hasErrors = true;
+            }
+            
+            // If there are client-side errors, stop submission
+            if (hasErrors) {
+                if (errorMessages.length > 0 && formErrors.length) {
+                    let errors = '<ul class="mb-0">';
+                    errorMessages.forEach(function(msg) {
+                        errors += '<li>' + msg + '</li>';
+                    });
+                    errors += '</ul>';
+                    formErrors.removeClass('d-none').html(errors);
+                }
+                return false;
+            }
+            
             const studentId = $('#editStudentId').val();
             const formData = $(this).serialize();
             

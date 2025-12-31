@@ -46,7 +46,8 @@ class StudentController extends Controller
             'check_in_date' => 'nullable|date',
             'notes' => 'nullable|string',
         ], [
-            'phone.regex' => 'Phone number must start with 255 followed by 9 digits (e.g., 255612345678).',
+            'phone.required' => 'Phone number is required.',
+            'phone.regex' => 'Phone number must start with 255 followed by 9 digits (e.g., 255612345678). Total length should be 12 digits.',
             'phone.unique' => 'This phone number is already registered. Please use a different number.',
         ]);
 
@@ -322,7 +323,12 @@ class StudentController extends Controller
             'student_number' => 'required|string|max:255|unique:students,student_number,' . $student->id,
             'full_name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:255',
+            'phone' => [
+                'required',
+                'string',
+                'regex:/^255\d{9}$/',
+                'unique:students,phone,' . $student->id,
+            ],
             'national_id' => 'nullable|string|max:255',
             'course' => 'nullable|string|max:255',
             'year_of_study' => 'nullable|string|max:255',
@@ -330,6 +336,10 @@ class StudentController extends Controller
             'check_in_date' => 'nullable|date',
             'check_out_date' => 'nullable|date',
             'notes' => 'nullable|string',
+        ], [
+            'phone.required' => 'Phone number is required.',
+            'phone.regex' => 'Phone number must start with 255 followed by 9 digits (e.g., 255612345678). Total length should be 12 digits.',
+            'phone.unique' => 'This phone number is already registered. Please use a different number.',
         ]);
 
         if ($validator->fails()) {

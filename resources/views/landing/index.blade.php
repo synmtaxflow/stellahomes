@@ -243,7 +243,7 @@
     @php
         $primaryColor = $settings['primary_color'] ?? '#1e3c72';
         $secondaryColor = $settings['secondary_color'] ?? '#2a5298';
-        $heroImage = $settings['hero_image'] ?? asset('landing pages/img/hero.jpg');
+        $heroImage = asset('storage/landing-page/blocks.jpg');
         // Convert hex to rgb for rgba
         $primaryRgb = sscanf($primaryColor, "#%02x%02x%02x");
         $secondaryRgb = sscanf($secondaryColor, "#%02x%02x%02x");
@@ -274,7 +274,7 @@
             <div class="row gx-5">
                 <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
                     <div class="position-relative h-100">
-                        <img class="position-absolute w-100 h-100 rounded" src="{{ $settings['about_image'] ?? asset('landing pages/img/about.jpg') }}"
+                        <img class="position-absolute w-100 h-100 rounded" src="{{ asset('storage/landing-page/room.jpg') }}"
                             style="object-fit: cover;">
                     </div>
                 </div>

@@ -143,8 +143,8 @@ class AuthController extends Controller
         // Generate a new temporary password
         $newPassword = $this->generateTemporaryPassword();
         
-        // Update user password
-        $user->password = Hash::make($newPassword);
+        // Update user password (Laravel will auto-hash it due to 'hashed' cast in User model)
+        $user->password = $newPassword;
         $user->save();
 
         // Send SMS with password
